@@ -7,8 +7,13 @@ dist/elm.js: src/* elm-package.json
 
 
 .PHONY: watch
-watch: dist/main.js
+watch: launch
 	node_modules/.bin/chokidar 'src/**' 'assets/**' -c "$(MAKE) | grep -v '^make\['"
+
+
+.PHONY: launch
+launch: dist/main.js
+	electron dist/main.js &
 
 
 .PHONY: clean
