@@ -22,3 +22,19 @@ Sound effects manager for amateur theatre productions.
     - Application doesn't move or copy them, just remembers the paths
     - If you move files while it's trying to play them, expect errors! (Could make something go red when this happens I guess)
 - HTML5 audio
+- Controls
+    - While nothing is playing
+        - Up/Down arrows: select next sound to play, but don't play it yet
+        - Spacebar, enter, any letter key: Play next sound
+        - Click on any sound: Play it
+    - During play
+        - Up/Down arrows: select next sound to play, but don't play it yet
+        - Spacebar, enter, any letter key: Pause
+        - Clicking on currently playing sound: Pause
+        - Clicking on a different sound: nothing / make it next?
+        - Double-clicking on a different sound: play it
+    - At end of sound
+        - audio controls disappear from played sound
+        - just-played sound gets a replay icon
+        - audio controls appear on next selected sound
+        - Adjust window scroll to show next selected (and previous if possible)
