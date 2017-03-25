@@ -7,8 +7,8 @@ import Html.Attributes exposing (..)
 main : Html.Html msg
 main =
     div []
-        [ text "Wassup, world"
+        [ text "Hello, world"
         , br [] []
         , input [ type_ "file" ] []
-        , audio [ src "test-data/doorbell.mp3", controls True ] []
+        , audio [ src "sounds/doorbell.mp3", controls True ] []
         ]
