@@ -1,7 +1,14 @@
 module State exposing (init, update, subscriptions)
 
-import Types exposing (..)
+-- External modules
+
 import Html5.DragDrop as DragDrop
+
+
+-- Local modules
+
+import Types exposing (..)
+import State.Helpers exposing (moveItem, insertAt)
 
 
 init : ( Model, Cmd Msg )
@@ -24,40 +31,6 @@ init =
 subscriptions : a -> Sub Msg
 subscriptions =
     (\_ -> Sub.none)
-
-
-moveItem : Int -> Int -> List a -> List a
-moveItem dragPos dropPos list =
-    let
-        before =
-            (List.take dragPos list)
-
-        rest =
-            (List.drop dragPos list)
-
-        after =
-            List.drop 1 rest
-
-        removed =
-            before ++ after
-
-        dragDropItem =
-            List.take 1 rest
-
-        insertPos =
-            if dragPos < dropPos then
-                dropPos - 1
-            else
-                dropPos
-    in
-        insertAt insertPos dragDropItem removed
-
-
-insertAt : Int -> List a -> List a -> List a
-insertAt pos newItems list =
-    (List.take pos list)
-        ++ newItems
-        ++ (List.drop pos list)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
