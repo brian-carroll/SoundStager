@@ -1,19 +1,21 @@
-dist/main.js: assets/* dist/elm.js
+dist/main.js: assets/*
 	rsync -ai assets/* dist/
+	elm make $(elm_options) src/Main.elm --output dist/elm.js
 
 
-dist/elm.js: src/* elm-package.json
-	elm make --debug src/Main.elm --output dist/elm.js
-
-
-.PHONY: watch
-watch: launch
-	node_modules/.bin/chokidar 'src/**' 'assets/**' -c "$(MAKE) | grep -v '^make\['"
+.PHONY: debug
+debug:
+	$(MAKE) elm_options=--debug
 
 
 .PHONY: launch
 launch: dist/main.js
 	electron dist/main.js &
+
+
+.PHONY: watch
+watch: launch
+	node_modules/.bin/chokidar 'src/**' 'assets/**' -c "$(MAKE) | grep -v '^make\['"
 
 
 .PHONY: clean
