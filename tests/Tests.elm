@@ -3,35 +3,40 @@ module Tests exposing (..)
 import Test exposing (..)
 import Expect
 import Fuzz exposing (list, int, tuple, string)
-import String
+import State.Helpers exposing (moveItem)
 
 
 all : Test
 all =
-    describe "Sample Test Suite"
-        [ describe "Unit test examples"
-            [ test "Addition" <|
+    describe "SoundStager Test Suite"
+        [ describe "Drag And Drop algorithm (moveItem)"
+            [ test "Internal move, left to right" <|
                 \() ->
-                    Expect.equal (3 + 7) 10
-            , test "String.left" <|
+                    Expect.equal
+                        (moveItem 1 4 [ "0", "1", "2", "3", "4" ])
+                        [ "0", "2", "3", "1", "4" ]
+            , test "Internal move, right to left" <|
                 \() ->
-                    Expect.equal "a" (String.left 1 "abcdefg")
-            , test "This test should fail - you should remove it" <|
+                    Expect.equal
+                        (moveItem 3 1 [ "0", "1", "2", "3", "4" ])
+                        [ "0", "3", "1", "2", "4" ]
+            , test "Move to beginning" <|
                 \() ->
-                    Expect.fail "Failed as expected!"
-            ]
-        , describe "Fuzz test examples, using randomly generated input"
-            [ fuzz (list int) "Lists always have positive length" <|
-                \aList ->
-                    List.length aList |> Expect.atLeast 0
-            , fuzz (list int) "Sorting a list does not change its length" <|
-                \aList ->
-                    List.sort aList |> List.length |> Expect.equal (List.length aList)
-            , fuzzWith { runs = 1000 } int "List.member will find an integer in a list containing it" <|
-                \i ->
-                    List.member i [ i ] |> Expect.true "If you see this, List.member returned False!"
-            , fuzz2 string string "The length of a string equals the sum of its substrings' lengths" <|
-                \s1 s2 ->
-                    s1 ++ s2 |> String.length |> Expect.equal (String.length s1 + String.length s2)
+                    Expect.equal
+                        (moveItem 3 0 [ "0", "1", "2", "3", "4" ])
+                        [ "3", "0", "1", "2", "4" ]
+            , test "Move to end" <|
+                \() ->
+                    Expect.equal
+                        (moveItem 2 5 [ "0", "1", "2", "3", "4" ])
+                        [ "0", "1", "3", "4", "2" ]
+            , fuzz3 int int (list string) "Preserves list length" <|
+                \dragPos dropPos aList ->
+                    List.length (moveItem dragPos dropPos aList)
+                        |> Expect.equal (List.length aList)
+            , fuzz3 int int (list string) "Preserves sorted values" <|
+                \dragPos dropPos aList ->
+                    List.sort (moveItem dragPos dropPos aList)
+                        |> Expect.equal (List.sort aList)
             ]
         ]
