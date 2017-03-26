@@ -27,6 +27,11 @@ soundList model =
         dropPos : Maybe Position
         dropPos =
             DragDrop.getDropId model.dragDrop
+
+        tableRows : List (Html Msg)
+        tableRows =
+            (separator 0 dropPos)
+                :: List.concat (List.indexedMap (soundWrapper model dropPos) model.sounds)
     in
         table
             [ style
@@ -35,9 +40,7 @@ soundList model =
                 , ( "margin", "auto" )
                 ]
             ]
-            ((separator 0 dropPos)
-                :: List.concat (List.indexedMap (soundWrapper model dropPos) model.sounds)
-            )
+            tableRows
 
 
 soundWrapper : Model -> Maybe Position -> Position -> Sound -> List (Html Msg)
