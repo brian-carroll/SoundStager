@@ -2,67 +2,75 @@ module View exposing (root)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Types exposing (..)
+import Html5.DragDrop as DragDrop
 
 
-soundFileNames : List String
-soundFileNames =
-    [ "crash.mp3"
-    , "bang.mp3"
-    , "wallop.mp3"
-    , "meow.mp3"
-    , "woof.mp3"
-    , "neigh.mp3"
-    ]
-
-
-root : Html msg
-root =
+root : Model -> Html Msg
+root model =
     div []
         [ text "Hello, world"
         , br [] []
         , input [ type_ "file" ] []
         , audio [ src "sounds/doorbell.mp3", controls True ] []
         , hr [] []
-        , (soundList soundFileNames)
+        , (soundList model)
         ]
 
 
-soundList : List String -> Html msg
-soundList fileNames =
-    table
-        [ style
-            [ ( "text-align", "center" )
-            , ( "max-width", "300px" )
-            , ( "margin", "auto" )
+soundList : Model -> Html Msg
+soundList model =
+    let
+        -- Position at which user is about to drop dat sound
+        dropPos : Maybe Position
+        dropPos =
+            DragDrop.getDropId model.dragDrop
+    in
+        table
+            [ style
+                [ ( "text-align", "center" )
+                , ( "max-width", "300px" )
+                , ( "margin", "auto" )
+                ]
             ]
-        ]
-        (separator
-            :: List.concat (List.map soundWrapper fileNames)
-        )
+            ((separator 0 dropPos)
+                :: List.concat (List.indexedMap (soundWrapper model dropPos) model.sounds)
+            )
 
 
-soundWrapper : String -> List (Html msg)
-soundWrapper fileName =
+soundWrapper : Model -> Maybe Position -> Position -> Sound -> List (Html Msg)
+soundWrapper model dropPos pos fileName =
     [ tr []
         [ td []
-            [ sound fileName ]
+            [ sound pos fileName ]
         ]
-    , separator
+    , separator (pos + 1) dropPos
     ]
 
 
-separator : Html msg
-separator =
-    tr []
-        [ td [] []
-        , td []
-            [ button [] [ text "+" ]
+separator : Position -> Maybe Position -> Html Msg
+separator pos dropPos =
+    let
+        dropAttrs =
+            if dropPos == Just pos then
+                [ style [ ( "background-color", "cyan" ) ] ]
+            else
+                DragDrop.droppable DragDropMsg pos
+    in
+        tr []
+            [ td dropAttrs []
+            , td []
+                [ button [] [ text "+" ]
+                ]
             ]
-        ]
 
 
-sound : String -> Html msg
-sound fileName =
-    div
-        [ class "sound" ]
-        [ text fileName ]
+sound : Position -> Sound -> Html Msg
+sound pos fileName =
+    let
+        dragAttrs =
+            DragDrop.draggable DragDropMsg pos
+    in
+        div
+            ([ class "sound" ] ++ dragAttrs)
+            [ text fileName ]

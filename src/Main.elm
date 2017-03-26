@@ -8,8 +8,17 @@ import Html
 -- Local modules
 
 import View
+import State
+import Types exposing (Model, Msg)
 
 
-main : Html.Html msg
+{-| Entry point for the app
+-}
+main : Program Never Model Msg
 main =
-    View.root
+    Html.program
+        { init = State.init
+        , update = State.update
+        , subscriptions = State.subscriptions
+        , view = View.root
+        }

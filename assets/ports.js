@@ -1,6 +1,5 @@
 'use strict'
 
-
 // Remove 'require' so we can easily use Elm browser-based debugger
 // App is imported in HTML instead. Keepin' it old school.
 // const Elm = require('./elm.js')
