@@ -6,3 +6,14 @@ td.sound {
     padding: 20px;
     border: solid 1px black;
 }
+
+.hidden-input {
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+}
+
+.insert-file {
+    width: 25px;
+    height: 25px;
+}

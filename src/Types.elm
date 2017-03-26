@@ -29,7 +29,7 @@ type alias Model =
 type Msg
     = DragDropMsg (DragDrop.Msg Position Position)
     | AddSound Position
-    | Insert Position Sound
+    | InsertSound Position Sound
     | CurrentSoundFinished
     | PlayNextSound
     | SetNextSound Position

@@ -50,9 +50,14 @@ moveItem dragPos dropPos list =
             else
                 dropPos
     in
-        (List.take insertPos removed)
-            ++ dragDropItem
-            ++ (List.drop insertPos removed)
+        insertAt insertPos dragDropItem removed
+
+
+insertAt : Int -> List a -> List a -> List a
+insertAt pos newItems list =
+    (List.take pos list)
+        ++ newItems
+        ++ (List.drop pos list)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -71,11 +76,20 @@ update msg model =
                         Just ( dragPos, dropPos ) ->
                             moveItem dragPos dropPos model.sounds
             in
-                { model
+                ( { model
                     | dragDrop = ddModel
                     , sounds = updatedSounds
-                }
-                    ! []
+                  }
+                , Cmd.none
+                )
+
+        InsertSound pos sound ->
+            ( { model
+                | sounds =
+                    insertAt pos [ sound ] model.sounds
+              }
+            , Cmd.none
+            )
 
         _ ->
-            ( model, Cmd.none )
+            Debug.crash "State.update case not implemented"

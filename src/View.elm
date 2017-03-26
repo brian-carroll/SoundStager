@@ -2,8 +2,10 @@ module View exposing (root)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (on, targetValue)
 import Types exposing (..)
 import Html5.DragDrop as DragDrop
+import Json.Decode
 
 
 root : Model -> Html Msg
@@ -56,12 +58,30 @@ separator pos dropPos =
                 [ style [ ( "background-color", "cyan" ) ] ]
             else
                 DragDrop.droppable DragDropMsg pos
+
+        fileInputId =
+            "select-file-" ++ toString pos
+
+        createInsertMsg fileName =
+            InsertSound pos fileName
     in
         tr []
             [ td dropAttrs []
             , td []
-                [ button [] [ text "+" ]
+                [ input
+                    [ class "insert-file hidden-input"
+                    , type_ "file"
+                    , id fileInputId
+                    , on "change" (Json.Decode.map createInsertMsg targetValue)
+                    ]
+                    []
+                , label [ for fileInputId ]
+                    [ button []
+                        [ text "+"
+                        ]
+                    ]
                 ]
+              -- ]
             ]
 
 
