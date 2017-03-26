@@ -1,5 +1,9 @@
 'use strict'
-const Elm = require('./elm.js')
+
+
+// Remove 'require' so we can easily use Elm browser-based debugger
+// App is imported in HTML instead. Keepin' it old school.
+// const Elm = require('./elm.js')
 
 // get a reference to the div where we will show our UI
 let container = document.getElementById('container')

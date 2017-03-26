@@ -3,7 +3,7 @@ dist/main.js: assets/* dist/elm.js
 
 
 dist/elm.js: src/* elm-package.json
-	elm make src/Main.elm --output dist/elm.js
+	elm make --debug src/Main.elm --output dist/elm.js
 
 
 .PHONY: watch
