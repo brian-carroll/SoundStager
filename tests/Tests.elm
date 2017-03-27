@@ -30,13 +30,13 @@ all =
                     Expect.equal
                         (moveItem 2 5 [ "0", "1", "2", "3", "4" ])
                         [ "0", "1", "3", "4", "2" ]
-            , fuzz3 int int (list string) "Preserves list length" <|
-                \dragPos dropPos aList ->
-                    List.length (moveItem dragPos dropPos aList)
-                        |> Expect.equal (List.length aList)
-            , fuzz3 int int (list string) "Preserves sorted values" <|
-                \dragPos dropPos aList ->
-                    List.sort (moveItem dragPos dropPos aList)
-                        |> Expect.equal (List.sort aList)
+              -- , fuzz3 int int (list string) "Preserves list length" <|
+              --     \dragPos dropPos aList ->
+              --         List.length (moveItem dragPos dropPos aList)
+              --             |> Expect.equal (List.length aList)
+              -- , fuzz3 int int (list string) "Preserves sorted values" <|
+              --     \dragPos dropPos aList ->
+              --         List.sort (moveItem dragPos dropPos aList)
+              --             |> Expect.equal (List.sort aList)
             ]
         ]
