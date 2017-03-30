@@ -17,13 +17,14 @@ init =
     , currentSound = Just 0
     , nextSound = Just 1
     , sounds =
-        [ "crash.mp3"
-        , "bang.mp3"
-        , "wallop.mp3"
-        , "meow.mp3"
-        , "woof.mp3"
-        , "neigh.mp3"
-        ]
+        [ "0", "1", "2", "3", "4" ]
+        -- [ "crash.mp3"
+        -- , "bang.mp3"
+        -- , "wallop.mp3"
+        -- , "meow.mp3"
+        -- , "woof.mp3"
+        -- , "neigh.mp3"
+        -- ]
     }
         ! []
 

@@ -14,23 +14,89 @@ module State.Helpers exposing (moveItem, maybeToList, insertAt)
      unless
          we're at dragPos, in which case do nothing
          or we're at dropPos, in which case insert 2 items instead of 1
+
+
+   Potential improvement
+        Implement tail recursion to avoid stack overflow
+        Iterate to stopPos then return full result
+        result =
+            if dragPos > dropPos then
+                before ++ between ++ dropItem ++ after
+            else
+                before ++ dropItem ++ between ++ after
+        Append to different lists depending on where we are
+            before drag and drop
+                tail recursion, appending to before
+            at drag
+                tail recursion, with [dragItem]
+            between drag and drop
+                tail recursion, appending to between
+            after stopPos
+                return result
+        Avoid mistakes
+            Write out return expression in each test case
+                moveItem 1 4 [ "0", "1", "2", "3", "4" ]
+                    = ["0"] ++ ["2", "3"] ++ ["1"] ++ ["4"]
+                moveItem 3 1 [ "0", "1", "2", "3", "4" ]
+                    = ["0"] ++ ["3"] ++ ["1", "2"] ++ ["4"]
+                moveItem 3 0 [ "0", "1", "2", "3", "4" ]
+                    = [] ++ ["3"] ++ ["0", "1", "2"] ++ ["4"]
+                moveItem 2 5 [ "0", "1", "2", "3", "4" ]
+                    = ["0", "1"] ++ ["3", "4"] ++ ["2"] ++ []
+        Closure around max and min => avoid lots of args but get lots of indentation
 -}
 
 
 moveItem : Int -> Int -> List a -> List a
 moveItem dragPos dropPos list =
     let
-        stopPos =
+        pos1 =
+            min dragPos dropPos
+
+        pos2 =
             max dragPos dropPos
 
-        ( _, newList ) =
-            moveItemHelp dragPos dropPos stopPos 0 Nothing list
+        betweenFirst =
+            if dropPos > dragPos then
+                dragPos + 1
+            else
+                dropPos
+
+        betweenLast =
+            if dropPos > dragPos then
+                dropPos - 1
+            else
+                dragPos - 1
+
+        moveItemHelp : List a -> List a -> List a -> Int -> List a -> List a
+        moveItemHelp dragItemList before between pos list =
+            let
+                h =
+                    List.take 1 list
+
+                t =
+                    List.drop 1 list
+            in
+                if pos < pos1 then
+                    moveItemHelp dragItemList (before ++ h) between (pos + 1) t
+                else if pos == dragPos then
+                    moveItemHelp h before between (pos + 1) t
+                else if (pos >= betweenFirst) && (pos <= betweenLast) then
+                    moveItemHelp dragItemList before (between ++ h) (pos + 1) t
+                else if dragPos > dropPos then
+                    before ++ dragItemList ++ between ++ list
+                else
+                    before ++ between ++ dragItemList ++ list
     in
-        newList
+        moveItemHelp [] [] [] 0 list
 
 
-moveItemHelp : Int -> Int -> Int -> Int -> Maybe a -> List a -> ( Maybe a, List a )
-moveItemHelp dragPos dropPos stopPos pos inputDragItem list =
+
+--moveItemHelp
+
+
+moveItemHelpOld : Int -> Int -> Int -> Int -> Maybe a -> List a -> ( Maybe a, List a )
+moveItemHelpOld dragPos dropPos stopPos pos inputDragItem list =
     let
         dragItem =
             if pos == dragPos then
@@ -43,7 +109,7 @@ moveItemHelp dragPos dropPos stopPos pos inputDragItem list =
         else
             let
                 ( dropItem, result ) =
-                    moveItemHelp dragPos dropPos stopPos (pos + 1) dragItem (List.drop 1 list)
+                    moveItemHelpOld dragPos dropPos stopPos (pos + 1) dragItem (List.drop 1 list)
 
                 first =
                     List.take 1 list
